@@ -1,0 +1,23 @@
+-- upgrade --
+CREATE TABLE IF NOT EXISTS "user" (
+    "id" UUID NOT NULL  PRIMARY KEY,
+    "email" VARCHAR(255) NOT NULL UNIQUE,
+    "password_hash" TEXT NOT NULL,
+    "use_hmac" BOOL NOT NULL,
+    "is_superuser" BOOL NOT NULL  DEFAULT False,
+    "created" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP,
+    "updated" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS "password" (
+    "id" UUID NOT NULL  PRIMARY KEY,
+    "login" VARCHAR(255) NOT NULL,
+    "password" VARCHAR(255) NOT NULL,
+    "url" TEXT,
+    "description" TEXT,
+    "created" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP,
+    "updated" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP,
+    "user_id" UUID NOT NULL REFERENCES "user" ("id") ON DELETE CASCADE
+);;
+-- downgrade --
+DROP TABLE IF EXISTS "password";
+DROP TABLE IF EXISTS "user";
